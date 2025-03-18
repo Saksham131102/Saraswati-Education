@@ -5,7 +5,7 @@ import { authAPI } from '../../services/api';
 const AdminLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: import.meta.env.VITE_ADMIN_EMAIL || '',
+    email: '',
     password: ''
   });
   const [error, setError] = useState<string>('');
