@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaGraduationCap, FaUsers, FaBook, FaArrowRight } from 'react-icons/fa';
-import { courseAPI, announcementAPI, testimonialAPI } from '../services/api';
+import { courseAPI, announcementAPI } from '../services/api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import TestimonialCarousel from '../components/TestimonialCarousel';
@@ -27,7 +27,7 @@ const heroImage = 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?
 const Home = () => {
   const [courses, setCourses] = useState<any[]>([]);
   const [announcements, setAnnouncements] = useState<any[]>([]);
-  const [testimonials, setTestimonials] = useState<any[]>([]);
+  // const [testimonials, setTestimonials] = useState<any[]>([]);
   // const [newsletterEmail, setNewsletterEmail] = useState('');
   // const [newsletterMessage, setNewsletterMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -45,21 +45,21 @@ const Home = () => {
         setAnnouncements(announcementsResponse.data || []);
         
         // Fetch testimonials - sort by rating and limit to top 10
-        const testimonialsResponse = await testimonialAPI.getAll({ 
-          sort: '-rating', 
-          limit: 10 
-        });
-        console.log('Testimonials response:', testimonialsResponse);
+        // const testimonialsResponse = await testimonialAPI.getAll({ 
+        //   sort: '-rating', 
+        //   limit: 10 
+        // });
+        // console.log('Testimonials response:', testimonialsResponse);
         
-        // Extract testimonials data
-        let testimonialData = [];
-        if (testimonialsResponse && testimonialsResponse.data && Array.isArray(testimonialsResponse.data)) {
-          testimonialData = testimonialsResponse.data;
-        } else if (testimonialsResponse && testimonialsResponse.data && testimonialsResponse.data.data && Array.isArray(testimonialsResponse.data.data)) {
-          testimonialData = testimonialsResponse.data.data;
-        }
+        // // Extract testimonials data
+        // let testimonialData = [];
+        // if (testimonialsResponse && testimonialsResponse.data && Array.isArray(testimonialsResponse.data)) {
+        //   testimonialData = testimonialsResponse.data;
+        // } else if (testimonialsResponse && testimonialsResponse.data && testimonialsResponse.data.data && Array.isArray(testimonialsResponse.data.data)) {
+        //   testimonialData = testimonialsResponse.data.data;
+        // }
         
-        setTestimonials(testimonialData);
+        // setTestimonials(testimonialData);
       } catch (error) {
         console.error('Error fetching data:', error);
         toast.error('Failed to load content. Please try again later.');

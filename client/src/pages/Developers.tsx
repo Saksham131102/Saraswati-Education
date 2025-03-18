@@ -11,7 +11,7 @@ interface Developer {
 }
 
 const Developers = () => {
-  const [developers, setDevelopers] = useState<Developer[]>([
+  const [developers] = useState<Developer[]>([
     {
       _id: '1',
       name: 'Saksham',
@@ -29,7 +29,6 @@ const Developers = () => {
       skills: 'React, Node.js, MongoDB, JavaScript, REST APIs'
     }
   ]);
-  const [loading, setLoading] = useState(false);
 
   return (
     <div className="min-h-screen py-12 bg-gray-50">

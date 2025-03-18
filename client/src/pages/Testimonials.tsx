@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaStar, FaQuoteLeft } from 'react-icons/fa';
+// import { FaStar, FaQuoteLeft } from 'react-icons/fa';
 import TestimonialForm from '../components/TestimonialForm';
 import TestimonialCarousel from '../components/TestimonialCarousel';
 
