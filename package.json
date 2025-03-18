@@ -1,0 +1,19 @@
+{
+  "name": "coaching-platform",
+  "version": "1.0.0",
+  "description": "Coaching Platform",
+  "main": "index.js",
+  "scripts": {
+    "start": "cd server && npm start",
+    "build": "npm run build-client && npm run copy-client",
+    "build-client": "cd client && npm install && npm run build",
+    "build-server": "cd server && npm install",
+    "copy-client": "mkdir -p server/public && cp -r client/dist/* server/public/",
+    "postinstall": "npm run build-server && npm run build-client && npm run copy-client"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "author": "",
+  "license": "ISC"
+} 
