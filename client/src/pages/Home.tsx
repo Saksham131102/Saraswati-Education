@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import TestimonialCarousel from '../components/TestimonialCarousel';
 import VideoCarousel from '../components/VideoCarousel';
+import MotivationalQuoteCarousel from '../components/MotivationalQuoteCarousel';
 
 const motivationalQuotes = [
   {
@@ -157,10 +158,7 @@ const Home = () => {
       {/* Motivational Quote Section */}
       <div className="py-16 bg-gradient-to-r from-purple-500 to-pink-500 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <blockquote className="text-2xl md:text-3xl font-serif italic mb-4">
-            "{motivationalQuotes[1].text}"
-          </blockquote>
-          <p className="text-lg">- {motivationalQuotes[1].author}</p>
+          <MotivationalQuoteCarousel quotes={motivationalQuotes} />
         </div>
       </div>
 
