@@ -2,12 +2,8 @@ import { cn } from "../../utils/cn";
 import {
   motion,
   AnimatePresence,
-  useScroll,
-  useTransform,
-  useSpring,
-  useMotionValue,
 } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export const ImagesSlider = ({
   images,
