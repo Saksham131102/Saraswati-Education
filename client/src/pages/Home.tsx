@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaGraduationCap, FaUsers, FaBook, FaArrowRight } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
@@ -8,6 +8,7 @@ import VideoCarousel from '../components/VideoCarousel';
 import MotivationalQuoteCarousel from '../components/MotivationalQuoteCarousel';
 import { ImagesSlider } from '../components/ui/images-slider';
 import { useCourses, useAnnouncements, useTeamMembers } from '../hooks/useQueryHooks';
+import { queryClient } from '../lib/react-query';
 
 interface TeamMember {
   _id: string;
@@ -84,6 +85,48 @@ const heroImages = [
 ];
 
 const Home = () => {
+  // Pre-fetch and cache critical data
+  useEffect(() => {
+    const prefetchData = async () => {
+      // Prefetch courses if not in cache
+      if (!queryClient.getQueryData(['courses-list'])) {
+        const { courseAPI } = await import('../services/api');
+        queryClient.prefetchQuery({
+          queryKey: ['courses-list'],
+          queryFn: async () => {
+            const response = await courseAPI.getAll();
+            if (response?.data && Array.isArray(response.data)) {
+              return response.data;
+            } else if (response?.data?.data && Array.isArray(response.data.data)) {
+              return response.data.data;
+            }
+            return [];
+          },
+        });
+      }
+
+      // Prefetch team members if not in cache
+      if (!queryClient.getQueryData(['team-members', 'team'])) {
+        const { teamAPI } = await import('../services/api');
+        queryClient.prefetchQuery({
+          queryKey: ['team-members', 'team'],
+          queryFn: async () => {
+            const response = await teamAPI.getAll({ type: 'team' });
+            if (response?.data && Array.isArray(response.data)) {
+              return response.data;
+            } else if (response?.data?.data && Array.isArray(response.data.data)) {
+              return response.data.data;
+            }
+            return [];
+          },
+        });
+      }
+    };
+
+    prefetchData();
+  }, []);
+
+  // Use React Query hooks with proper query keys that match the ones used for prefetching
   const { 
     data: courses = [], 
     isLoading: isCoursesLoading,
@@ -102,16 +145,20 @@ const Home = () => {
     error: teamError
   } = useTeamMembers();
 
+  // Filter to just 3 team members
   const teamMembers = teamMembersData.slice(0, 3);
   
-  // const isLoading = isCoursesLoading || isAnnouncementsLoading || isTeamLoading;
+  // Combined loading state
+  const isLoading = isCoursesLoading || isAnnouncementsLoading || isTeamLoading;
   
+  // Handle errors from any of the queries
   useEffect(() => {
     if (coursesError || announcementsError || teamError) {
       toast.error('Failed to load some content. Please try again later.');
     }
   }, [coursesError, announcementsError, teamError]);
 
+  // Scroll to section if hash is present in URL
   useEffect(() => {
     if (window.location.hash) {
       const id = window.location.hash.substring(1);

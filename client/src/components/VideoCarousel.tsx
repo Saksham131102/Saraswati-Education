@@ -1,6 +1,8 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { useVideos } from '../hooks/useQueryHooks';
+import { useEffect } from 'react';
+import { queryClient } from '../lib/react-query';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -21,12 +23,42 @@ interface VideoCarouselProps {
 }
 
 const VideoCarousel = ({ limit = 3 }: VideoCarouselProps) => {
-  // Use React Query hook instead of direct API call
+  const options = { limit, featured: true };
+  
+  // Pre-fetch and cache videos data
+  useEffect(() => {
+    // Prefetch videos if they're not already in the cache
+    if (!queryClient.getQueryData(['videos-list', JSON.stringify(options)])) {
+      queryClient.prefetchQuery({
+        queryKey: ['videos-list', JSON.stringify(options)],
+        queryFn: async () => {
+          const { videoAPI } = await import('../services/api');
+          const response = await videoAPI.getAll({
+            limit: options.limit,
+            filters: {
+              isActive: true,
+              featured: true
+            }
+          });
+          
+          // Extract data
+          if (response?.data && Array.isArray(response.data)) {
+            return response.data;
+          } else if (response?.data?.data && Array.isArray(response.data.data)) {
+            return response.data.data;
+          }
+          return [];
+        },
+      });
+    }
+  }, [limit]);
+
+  // Use React Query hook
   const { 
     data: videos = [], 
     isLoading, 
     error 
-  } = useVideos({ limit, featured: true });
+  } = useVideos(options);
 
   if (isLoading) {
     return (

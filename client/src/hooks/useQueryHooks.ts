@@ -16,73 +16,79 @@ const extractData = (response: any) => {
 // Courses hooks
 export const useCourses = () => {
   return useQuery({
-    queryKey: ['courses'],
+    queryKey: ['courses-list'],
     queryFn: async () => {
       const response = await courseAPI.getAll();
       return extractData(response);
-    }
+    },
+    staleTime: Infinity,
   });
 };
 
 export const useCourse = (id: string) => {
   return useQuery({
-    queryKey: ['courses', id],
+    queryKey: ['course-detail', id],
     queryFn: async () => {
       const response = await courseAPI.getById(id);
       return response.data || response;
     },
-    enabled: !!id // Only run query if ID exists
+    enabled: !!id,
+    staleTime: Infinity,
   });
 };
 
 // Announcements hooks
 export const useAnnouncements = (category: string = '') => {
   return useQuery({
-    queryKey: ['announcements', category],
+    queryKey: ['announcements-list', category],
     queryFn: async () => {
       const response = await announcementAPI.getAll(category);
       return extractData(response);
-    }
+    },
+    staleTime: 1000 * 60 * 10,
   });
 };
 
 export const useAnnouncement = (id: string) => {
   return useQuery({
-    queryKey: ['announcements', id],
+    queryKey: ['announcement-detail', id],
     queryFn: async () => {
       const response = await announcementAPI.getById(id);
       return response.data || response;
     },
-    enabled: !!id
+    enabled: !!id,
+    staleTime: 1000 * 60 * 10,
   });
 };
 
 // Team members hooks
 export const useTeamMembers = (type: string = 'team') => {
   return useQuery({
-    queryKey: ['team', type],
+    queryKey: ['team-members', type],
     queryFn: async () => {
       const response = await teamAPI.getAll({ type });
       return extractData(response);
-    }
+    },
+    staleTime: Infinity,
   });
 };
 
 export const useTeamMember = (id: string) => {
   return useQuery({
-    queryKey: ['team', id],
+    queryKey: ['team-member-detail', id],
     queryFn: async () => {
       const response = await teamAPI.getById(id);
       return response.data || response;
     },
-    enabled: !!id
+    enabled: !!id,
+    staleTime: Infinity,
   });
 };
 
 // Testimonials hooks
 export const useTestimonials = (options: { limit?: number, sort?: string } = {}) => {
   return useQuery({
-    queryKey: ['testimonials', options],
+    queryKey: ['testimonials-list', JSON.stringify(options)],
     queryFn: async () => {
       const response = await testimonialAPI.getAll({
         ...options,
@@ -92,14 +98,15 @@ export const useTestimonials = (options: { limit?: number, sort?: string } = {})
         }
       });
       return extractData(response);
-    }
+    },
+    staleTime: 1000 * 60 * 10,
   });
 };
 
 // Videos hooks
 export const useVideos = (options: { limit?: number, featured?: boolean } = {}) => {
   return useQuery({
-    queryKey: ['videos', options],
+    queryKey: ['videos-list', JSON.stringify(options)],
     queryFn: async () => {
       const response = await videoAPI.getAll({
         limit: options.limit,
@@ -109,6 +116,7 @@ export const useVideos = (options: { limit?: number, featured?: boolean } = {}) 
         }
       });
       return extractData(response);
-    }
+    },
+    staleTime: Infinity,
   });
 }; 
