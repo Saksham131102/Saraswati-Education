@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 import { videoAPI } from '../services/api';
-import { FaYoutube } from 'react-icons/fa';
 
 // Import Swiper styles
 import 'swiper/css';
