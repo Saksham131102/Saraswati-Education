@@ -10,6 +10,7 @@ import Announcements from './pages/Announcements';
 import Developers from './pages/Developers';
 import Team from './pages/Team';
 import Testimonials from './pages/Testimonials';
+import Videos from './pages/Videos';
 import AdminLogin from './pages/admin/Login';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminCourses from './pages/admin/Courses';
@@ -18,6 +19,7 @@ import AdminContacts from './pages/admin/Contacts';
 import AdminSettings from './pages/admin/Settings';
 import AdminTeam from './pages/admin/Team';
 import AdminTestimonials from './pages/admin/Testimonials';
+import AdminVideos from './pages/admin/Videos';
 import AuthMiddleware from './middlewares/AuthMiddleware';
 import NewsletterSubscriptions from './pages/admin/NewsletterSubscriptions';
 import ScrollToTop from './components/ScrollToTop';
@@ -42,6 +44,7 @@ function App() {
                 <Route path="/developers" element={<Developers />} />
                 <Route path="/team" element={<Team />} />
                 <Route path="/testimonials" element={<Testimonials />} />
+                <Route path="/videos" element={<Videos />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
               <Footer />
@@ -67,6 +70,7 @@ function App() {
                     <Route path="/newsletter" element={<NewsletterSubscriptions />} />
                     <Route path="/team" element={<AdminTeam />} />
                     <Route path="/testimonials" element={<AdminTestimonials />} />
+                    <Route path="/videos" element={<AdminVideos />} />
                     <Route path="/settings" element={<AdminSettings />} />
                     <Route path="*" element={<Navigate to="/admin" replace />} />
                   </Routes>

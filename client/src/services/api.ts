@@ -203,4 +203,43 @@ export const testimonialAPI = {
   }
 };
 
+// Video API
+export const videoAPI = {
+  getAll: async (params?: { limit?: number; page?: number; sort?: string; filters?: Record<string, any> }) => {
+    try {
+      // If filters are provided, add them to the params
+      const requestParams: Record<string, any> = { ...params };
+      if (params?.filters) {
+        Object.entries(params.filters).forEach(([key, value]) => {
+          requestParams[key] = value;
+        });
+        delete requestParams.filters;
+      }
+      
+      const response = await api.get('/videos', { params: requestParams });
+      console.log('GET /videos API response:', response);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching videos:', error);
+      throw error;
+    }
+  },
+  getById: async (id: string) => {
+    const response = await api.get(`/videos/${id}`);
+    return response.data;
+  },
+  create: async (data: any) => {
+    const response = await api.post('/videos', data);
+    return response.data;
+  },
+  update: async (id: string, data: any) => {
+    const response = await api.put(`/videos/${id}`, data);
+    return response.data;
+  },
+  delete: async (id: string) => {
+    const response = await api.delete(`/videos/${id}`);
+    return response.data;
+  }
+};
+
 export default api; 

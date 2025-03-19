@@ -5,6 +5,7 @@ import { courseAPI, announcementAPI } from '../services/api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import TestimonialCarousel from '../components/TestimonialCarousel';
+import VideoCarousel from '../components/VideoCarousel';
 
 const motivationalQuotes = [
   {
@@ -197,7 +198,7 @@ const Home = () => {
                         Class {course.class}
                       </span>
                       <Link
-                        to={`/courses/${course._id}`}
+                        to={`/courses`}
                         className="text-blue-600 font-semibold hover:text-blue-800"
                       >
                         Learn More →
@@ -251,7 +252,7 @@ const Home = () => {
                       {new Date(announcement.date).toLocaleDateString()}
                     </span>
                     <Link
-                      to={`/announcements/${announcement._id}`}
+                      to={`/announcements`}
                       className="text-blue-600 hover:text-blue-800 font-medium"
                     >
                       Read more →
@@ -265,10 +266,10 @@ const Home = () => {
       </div>
 
       {/* Testimonials Section */}
-      <div className="py-16">
+      <div className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-12">
-            <h2 className="text-3xl font-bold">Testimonials</h2>
+            <h2 className="text-3xl font-bold">What Our Students Say</h2>
             <Link 
               to="/testimonials" 
               className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
@@ -277,13 +278,24 @@ const Home = () => {
             </Link>
           </div>
           
-          {isLoading ? (
-            <div className="flex justify-center py-10">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-            </div>
-          ) : (
-            <TestimonialCarousel limit={10} />
-          )}
+          <TestimonialCarousel limit={5} />
+        </div>
+      </div>
+
+      {/* Videos Section */}
+      <div className="pt-16 pb-2 bg-gradient-to-r from-purple-500 to-pink-500">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center mb-12">
+            <h2 className="text-3xl text-white font-bold">Educational Videos</h2>
+            <Link 
+              to="/videos" 
+              className="flex items-center text-white hover:text-gray-200 font-medium"
+            >
+              View All Videos <FaArrowRight className="ml-2" />
+            </Link>
+          </div>
+          
+          <VideoCarousel limit={3} />
         </div>
       </div>
 

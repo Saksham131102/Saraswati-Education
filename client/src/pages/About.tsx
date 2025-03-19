@@ -8,6 +8,10 @@ interface TeamMember {
   role: string;
   bio: string;
   image: string;
+  email: string;
+  qualifications: string[];
+  areasOfInterest: string[];
+  type: string;
 }
 
 const About = () => {
@@ -98,18 +102,60 @@ const About = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {teamMembers.map((member) => (
-                <div key={member._id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-64 object-cover"
-                  />
+                <div key={member._id} className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                  <div className="relative h-64">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h2 className="text-2xl font-bold text-white mb-1">{member.name}</h2>
+                      <p className="text-blue-200 font-semibold">{member.role}</p>
+                    </div>
+                  </div>
                   <div className="p-6">
-                    <h3 className="text-xl font-semibold mb-2">{member.name}</h3>
-                    <p className="text-gray-600 mb-2">{member.role}</p>
-                    <p className="text-gray-500">
-                      {member.bio}
-                    </p>
+                    {/* Display qualifications */}
+                    {member.qualifications && member.qualifications.length > 0 && (
+                      <div className="mb-4">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Qualifications</h3>
+                        <ul className="list-disc pl-5 text-gray-600">
+                          {member.qualifications.map((qual, index) => (
+                            <li key={index}>{qual}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    {/* Display areas of interest */}
+                    {member.areasOfInterest && member.areasOfInterest.length > 0 && (
+                      <div className="mb-4">
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Areas of Interest</h3>
+                        <div className="flex flex-wrap gap-2">
+                          {member.areasOfInterest.map((area, index) => (
+                            <span 
+                              key={index}
+                              className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                            >
+                              {area}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    <p className="text-gray-600 leading-relaxed">{member.bio}</p>
+                    
+                    {/* Contact info */}
+                    <div className="mt-4 pt-4 border-t border-gray-200">
+                      <p className="text-gray-600">
+                        <strong>Email:</strong>{' '}
+                        <a href={`mailto:${member.email}`} className="text-blue-600 hover:underline">
+                          {member.email}
+                        </a>
+                      </p>
+                    </div>
                   </div>
                 </div>
               ))}
