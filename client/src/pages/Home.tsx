@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaGraduationCap, FaUsers, FaBook, FaArrowRight } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
@@ -149,7 +149,7 @@ const Home = () => {
   const teamMembers = teamMembersData.slice(0, 3);
   
   // Combined loading state
-  const isLoading = isCoursesLoading || isAnnouncementsLoading || isTeamLoading;
+  // const isLoading = isCoursesLoading || isAnnouncementsLoading || isTeamLoading;
   
   // Handle errors from any of the queries
   useEffect(() => {
