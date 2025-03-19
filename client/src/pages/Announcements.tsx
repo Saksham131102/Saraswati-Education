@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
-import { announcementAPI } from '../services/api';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
+import { useAnnouncements } from '../hooks/useQueryHooks';
 
 interface Announcement {
   _id: string;
@@ -11,35 +13,18 @@ interface Announcement {
 
 const Announcements = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchAnnouncements = async () => {
-      try {
-        setLoading(true);
-        const category = selectedCategory !== 'All' ? selectedCategory : '';
-        const response = await announcementAPI.getAll(category);
-        
-        // Handle server response format which may include { success, data, count }
-        const data = response.data || response;
-        setAnnouncements(Array.isArray(data) ? data : (data.data || []));
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching announcements:', err);
-        setError('Failed to load announcements. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAnnouncements();
-  }, [selectedCategory]);
+  
+  // Use React Query hook with category filter
+  const { 
+    data: announcements = [], 
+    isLoading, 
+    error,
+    refetch
+  } = useAnnouncements(selectedCategory !== 'All' ? selectedCategory : '');
 
   const categories = ['All', 'Courses', 'Events', 'Holidays', 'General'];
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen py-12 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
@@ -49,13 +34,19 @@ const Announcements = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen py-12">
+      <div id="top" className="min-h-screen py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="mb-6">
+            <Link to="/#announcements" className="inline-flex items-center text-blue-600 hover:text-blue-800">
+              <FaArrowLeft className="mr-2" /> Back to Home
+            </Link>
+          </div>
+          
           <div className="bg-red-50 text-red-800 p-4 rounded-md mb-8">
-            <p>{error}</p>
+            <p>Failed to load announcements. Please try again later.</p>
           </div>
           <button 
-            onClick={() => window.location.reload()} 
+            onClick={() => refetch()} 
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
             Try Again
@@ -66,8 +57,14 @@ const Announcements = () => {
   }
 
   return (
-    <div className="min-h-screen py-12">
+    <div id="top" className="min-h-screen py-12">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-6">
+          <Link to="/#announcements" className="inline-flex items-center text-blue-600 hover:text-blue-800">
+            <FaArrowLeft className="mr-2" /> Back to Home
+          </Link>
+        </div>
+
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold mb-4">Announcements</h1>
           <p className="text-xl text-gray-600">
@@ -95,7 +92,7 @@ const Announcements = () => {
         {/* Announcements List */}
         {announcements.length > 0 ? (
           <div className="space-y-8">
-            {announcements.map((announcement) => (
+            {announcements.map((announcement: Announcement) => (
               <div key={announcement._id} className="bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-4">

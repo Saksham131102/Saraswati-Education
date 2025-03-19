@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaGraduationCap, FaUsers, FaBook, FaArrowRight } from 'react-icons/fa';
-import { courseAPI, announcementAPI, teamAPI } from '../services/api';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import TestimonialCarousel from '../components/TestimonialCarousel';
 import VideoCarousel from '../components/VideoCarousel';
 import MotivationalQuoteCarousel from '../components/MotivationalQuoteCarousel';
 import { ImagesSlider } from '../components/ui/images-slider';
+import { useCourses, useAnnouncements, useTeamMembers } from '../hooks/useQueryHooks';
 
 interface TeamMember {
   _id: string;
@@ -19,6 +19,22 @@ interface TeamMember {
   qualifications: string[];
   areasOfInterest: string[];
   type: string;
+}
+
+interface Course {
+  _id: string;
+  title: string;
+  description: string;
+  image: string;
+  class: string;
+}
+
+interface Announcement {
+  _id: string;
+  title: string;
+  content: string;
+  date: string;
+  category: string;
 }
 
 const motivationalQuotes = [
@@ -68,93 +84,45 @@ const heroImages = [
 ];
 
 const Home = () => {
-  const [courses, setCourses] = useState<any[]>([]);
-  const [announcements, setAnnouncements] = useState<any[]>([]);
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-  // const [testimonials, setTestimonials] = useState<any[]>([]);
-  // const [newsletterEmail, setNewsletterEmail] = useState('');
-  // const [newsletterMessage, setNewsletterMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
+  const { 
+    data: courses = [], 
+    isLoading: isCoursesLoading,
+    error: coursesError
+  } = useCourses();
+  
+  const { 
+    data: announcements = [], 
+    isLoading: isAnnouncementsLoading,
+    error: announcementsError
+  } = useAnnouncements();
+  
+  const { 
+    data: teamMembersData = [], 
+    isLoading: isTeamLoading,
+    error: teamError
+  } = useTeamMembers();
+
+  const teamMembers = teamMembersData.slice(0, 3);
+  
+  // const isLoading = isCoursesLoading || isAnnouncementsLoading || isTeamLoading;
+  
+  useEffect(() => {
+    if (coursesError || announcementsError || teamError) {
+      toast.error('Failed to load some content. Please try again later.');
+    }
+  }, [coursesError, announcementsError, teamError]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        // Fetch courses
-        const coursesResponse = await courseAPI.getAll();
-        setCourses(coursesResponse.data || []);
-        
-        // Fetch announcements
-        const announcementsResponse = await announcementAPI.getAll();
-        setAnnouncements(announcementsResponse.data || []);
-        
-        // Fetch team members
-        const teamResponse = await teamAPI.getAll({ type: 'team' });
-        
-        // Extract team members from the correct path in the response
-        let teamData = [];
-        if (teamResponse && teamResponse.data && Array.isArray(teamResponse.data)) {
-          teamData = teamResponse.data;
-        } else if (teamResponse && teamResponse.data && teamResponse.data.data && Array.isArray(teamResponse.data.data)) {
-          teamData = teamResponse.data.data;
+    if (window.location.hash) {
+      const id = window.location.hash.substring(1);
+      setTimeout(() => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
         }
-        
-        // Only show first 3 team members
-        setTeamMembers(teamData.slice(0, 3));
-        
-        // Fetch testimonials - sort by rating and limit to top 10
-        // const testimonialsResponse = await testimonialAPI.getAll({ 
-        //   sort: '-rating', 
-        //   limit: 10 
-        // });
-        // console.log('Testimonials response:', testimonialsResponse);
-        
-        // // Extract testimonials data
-        // let testimonialData = [];
-        // if (testimonialsResponse && testimonialsResponse.data && Array.isArray(testimonialsResponse.data)) {
-        //   testimonialData = testimonialsResponse.data;
-        // } else if (testimonialsResponse && testimonialsResponse.data && testimonialsResponse.data.data && Array.isArray(testimonialsResponse.data.data)) {
-        //   testimonialData = testimonialsResponse.data.data;
-        // }
-        
-        // setTestimonials(testimonialData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        toast.error('Failed to load content. Please try again later.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
+      }, 100);
+    }
   }, []);
-
-  // const handleNewsletterSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   setNewsletterMessage('');
-
-  //   try {
-  //     const response = await fetch(`${import.meta.env.VITE_API_URL}/newsletter/subscribe`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ email: newsletterEmail }),
-  //     });
-      
-  //     const data = await response.json();
-      
-  //     if (data.success) {
-  //       toast.success('Successfully subscribed to the newsletter!');
-  //       setNewsletterEmail('');
-  //     } else {
-  //       toast.error(data.error || 'Failed to subscribe. Please try again.');
-  //     }
-  //   } catch (error) {
-  //     console.error('Newsletter subscription error:', error);
-  //     toast.error('Failed to subscribe. Please try again later.');
-  //   }
-  // };
 
   return (
     <div className="min-h-screen">
@@ -222,13 +190,13 @@ const Home = () => {
             </Link>
           </div>
           
-          {isLoading ? (
+          {isTeamLoading ? (
             <div className="flex justify-center py-10">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {teamMembers.map((member) => (
+              {teamMembers.map((member: TeamMember) => (
                 <div key={member._id} className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
                   <div className="relative h-64">
                     <img
@@ -248,7 +216,7 @@ const Home = () => {
                       <div className="mb-4">
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">Qualifications</h3>
                         <ul className="list-disc pl-5 text-gray-600">
-                          {member.qualifications.map((qual, index) => (
+                          {member.qualifications.map((qual: string, index: number) => (
                             <li key={index}>{qual}</li>
                           ))}
                         </ul>
@@ -260,7 +228,7 @@ const Home = () => {
                       <div className="mb-4">
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">Areas of Interest</h3>
                         <div className="flex flex-wrap gap-2">
-                          {member.areasOfInterest.map((area, index) => (
+                          {member.areasOfInterest.map((area: string, index: number) => (
                             <span 
                               key={index}
                               className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
@@ -289,25 +257,25 @@ const Home = () => {
       </div>
 
       {/* Featured Courses Section */}
-      <div className="py-16">
+      <div id="courses" className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-12">
             <h2 className="text-3xl font-bold">Featured Courses</h2>
             <Link 
-              to="/courses" 
+              to="/courses#top" 
               className="flex items-center text-blue-600 hover:text-blue-800 font-medium"
             >
               View All Courses <FaArrowRight className="ml-2" />
             </Link>
           </div>
           
-          {isLoading ? (
+          {isCoursesLoading ? (
             <div className="flex justify-center py-10">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {courses.slice(0, 3).map((course) => (
+              {courses.slice(0, 3).map((course: Course) => (
                 <div key={course._id} className="bg-white rounded-lg shadow-lg overflow-hidden">
                   <img src={course.image} alt={course.title} className="w-full h-48 object-cover" />
                   <div className="p-6">
@@ -337,25 +305,25 @@ const Home = () => {
       </div>
 
       {/* Latest Announcements Section */}
-      <div className="py-16 bg-gradient-to-r from-blue-900 to-blue-600">
+      <div id="announcements" className="py-16 bg-gradient-to-r from-blue-900 to-blue-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-12">
             <h2 className="text-3xl text-white font-bold">Latest Announcements</h2>
             <Link 
-              to="/announcements" 
+              to="/announcements#top" 
               className="flex items-center text-white hover:text-gray-200 font-medium"
             >
               View All Announcements <FaArrowRight className="ml-2" />
             </Link>
           </div>
           
-          {isLoading ? (
+          {isAnnouncementsLoading ? (
             <div className="flex justify-center py-10">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {announcements.slice(0, 3).map((announcement) => (
+              {announcements.slice(0, 3).map((announcement: Announcement) => (
                 <div key={announcement._id} className="bg-white p-6 rounded-lg shadow-md flex flex-col justify-between">
                   <div>
                     <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full mb-2
@@ -392,7 +360,7 @@ const Home = () => {
       </div>
 
       {/* Testimonials Section */}
-      <div className="py-16 bg-gray-50">
+      <div id="testimonials" className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-12">
             <h2 className="text-3xl font-bold">What Our Students Say</h2>
@@ -424,32 +392,6 @@ const Home = () => {
           <VideoCarousel limit={3} />
         </div>
       </div>
-
-      {/* Newsletter Section */}
-      {/* <div className="py-16 bg-gray-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold mb-4">Stay Updated</h2>
-          <p className="text-gray-300 mb-8">Subscribe to our newsletter for the latest updates and educational content</p>
-          <form onSubmit={handleNewsletterSubmit} className="max-w-md mx-auto">
-            <div className="flex gap-4">
-              <input
-                type="email"
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-2 rounded-lg text-gray-900"
-                required
-              />
-              <button
-                type="submit"
-                className="bg-blue-600 px-6 py-2 rounded-lg hover:bg-blue-700 transition duration-300"
-              >
-                Subscribe
-              </button>
-            </div>
-          </form>
-        </div>
-      </div> */}
     </div>
   );
 };

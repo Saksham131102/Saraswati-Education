@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 // import { FaStar, FaQuoteLeft } from 'react-icons/fa';
 import TestimonialForm from '../components/TestimonialForm';
 import TestimonialCarousel from '../components/TestimonialCarousel';
@@ -7,7 +9,13 @@ const Testimonials = () => {
   const [showForm, setShowForm] = useState(false);
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div id="top" className="container mx-auto px-4 py-12">
+      <div className="mb-6">
+        <Link to="/#testimonials" className="inline-flex items-center text-blue-600 hover:text-blue-800">
+          <FaArrowLeft className="mr-2" /> Back to Home
+        </Link>
+      </div>
+      
       <div className="text-center mb-10">
         <h1 className="text-4xl font-bold text-gray-800 mb-4">What Our Students Say</h1>
         <p className="text-gray-600 max-w-2xl mx-auto">

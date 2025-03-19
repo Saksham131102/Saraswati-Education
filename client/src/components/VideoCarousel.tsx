@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import { videoAPI } from '../services/api';
+import { useVideos } from '../hooks/useQueryHooks';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -22,47 +21,27 @@ interface VideoCarouselProps {
 }
 
 const VideoCarousel = ({ limit = 3 }: VideoCarouselProps) => {
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [loading, setLoading] = useState(true);
+  // Use React Query hook instead of direct API call
+  const { 
+    data: videos = [], 
+    isLoading, 
+    error 
+  } = useVideos({ limit, featured: true });
 
-  useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        setLoading(true);
-        const response = await videoAPI.getAll({
-          limit,
-          // Only fetch active videos
-          filters: {
-            isActive: true,
-            featured: true
-          }
-        });
-        
-        // Extract videos data
-        let videoData = [];
-        
-        if (response && response.data && Array.isArray(response.data)) {
-          videoData = response.data;
-        } else if (response && response.data && response.data.data && Array.isArray(response.data.data)) {
-          videoData = response.data.data;
-        }
-        
-        setVideos(videoData);
-      } catch (error) {
-        console.error('Error fetching videos:', error);
-        setVideos([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchVideos();
-  }, [limit]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center py-8">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="video-carousel my-12">
+        <div className="bg-red-50 text-red-700 p-4 rounded-lg">
+          <p>Failed to load videos. Please try again later.</p>
+        </div>
       </div>
     );
   }
@@ -99,7 +78,7 @@ const VideoCarousel = ({ limit = 3 }: VideoCarouselProps) => {
         }}
         className="py-10"
       >
-        {videos.map((video) => (
+        {videos.map((video: Video) => (
           <SwiperSlide key={video._id}>
             <div className="bg-white rounded-lg shadow-lg p-6 h-100 flex flex-col my-7">
               <div className="aspect-video mb-4 relative rounded-lg overflow-hidden">

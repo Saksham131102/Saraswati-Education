@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import { testimonialAPI } from '../services/api';
 import { FaStar, FaQuoteLeft } from 'react-icons/fa';
+import { useTestimonials } from '../hooks/useQueryHooks';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -24,43 +23,12 @@ interface TestimonialCarouselProps {
 }
 
 const TestimonialCarousel = ({ limit = 5 }: TestimonialCarouselProps) => {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchTestimonials = async () => {
-      try {
-        setLoading(true);
-        const response = await testimonialAPI.getAll({
-          limit,
-          sort: '-rating',
-          // Only fetch active and approved testimonials
-          filters: {
-            isActive: true,
-            isApproved: true
-          }
-        });
-        
-        // Extract testimonials data
-        let testimonialData = [];
-        
-        if (response && response.data && Array.isArray(response.data)) {
-          testimonialData = response.data;
-        } else if (response && response.data && response.data.data && Array.isArray(response.data.data)) {
-          testimonialData = response.data.data;
-        }
-        
-        setTestimonials(testimonialData);
-      } catch (error) {
-        console.error('Error fetching testimonials:', error);
-        setTestimonials([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTestimonials();
-  }, [limit]);
+  // Use React Query hook instead of direct API calls
+  const { 
+    data: testimonials = [], 
+    isLoading, 
+    error 
+  } = useTestimonials({ limit, sort: '-rating' });
 
   // Render star ratings
   const renderStars = (rating: number) => {
@@ -76,10 +44,20 @@ const TestimonialCarousel = ({ limit = 5 }: TestimonialCarouselProps) => {
     );
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center py-8">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="testimonial-carousel my-12">
+        <div className="bg-red-50 text-red-700 p-4 rounded-lg">
+          <p>Failed to load testimonials. Please try again later.</p>
+        </div>
       </div>
     );
   }
@@ -116,7 +94,7 @@ const TestimonialCarousel = ({ limit = 5 }: TestimonialCarouselProps) => {
         }}
         className="py-10"
       >
-        {testimonials.map((testimonial) => (
+        {testimonials.map((testimonial: Testimonial) => (
           <SwiperSlide key={testimonial._id}>
             <div className="bg-white rounded-lg shadow-lg p-6 h-full flex flex-col my-7">
               <div className="flex items-center mb-4">
