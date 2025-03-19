@@ -101,7 +101,7 @@ const VideoCarousel = ({ limit = 3 }: VideoCarouselProps) => {
       >
         {videos.map((video) => (
           <SwiperSlide key={video._id}>
-            <div className="bg-white rounded-lg shadow-lg p-6 h-full flex flex-col my-7">
+            <div className="bg-white rounded-lg shadow-lg p-6 h-100 flex flex-col my-7">
               <div className="aspect-video mb-4 relative rounded-lg overflow-hidden">
                 <iframe 
                   width="100%" 
