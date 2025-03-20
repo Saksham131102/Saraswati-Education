@@ -27,6 +27,10 @@ const Footer = () => {
                 className="text-gray-300 hover:text-[#23D366] transition-colors">
                 <FaWhatsapp className="text-xl" />
               </a>
+              <a href="https://www.youtube.com/@SarswatiEducation-v2x" target="_blank" rel="noopener noreferrer" 
+                className="text-gray-300 hover:text-[#FF0000] transition-colors">
+                <FaYoutube className="text-xl" />
+              </a>
               <a href="https://www.facebook.com/profile.php?id=100006934716893" target="_blank" rel="noopener noreferrer" 
                 className="text-gray-300 hover:text-[#0860F2] transition-colors">
                 <FaFacebook className="text-xl" />
@@ -80,7 +84,7 @@ const Footer = () => {
               </li>
               <li className="flex items-start">
                 <FaEnvelope className="h-5 w-5 mr-2 mt-0.5 text-gray-400" />
-                <span>saurabhkumardona11@gmail.com</span>
+                <span>Sarswatieducation3@gmail.com</span>
               </li>
               <li className="flex items-start">
                 <FaMapMarkerAlt className="h-5 w-5 mr-2 mt-0.5 text-gray-400" />
