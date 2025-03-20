@@ -23,7 +23,7 @@ const Footer = () => {
                 className="text-gray-300 hover:text-[#FD1B81] transition-colors">
                 <FaInstagram className="text-xl" />
               </a> */}
-              <a href="https://wa.me/6202723157" target="_blank" rel="noopener noreferrer" 
+              <a href="https://wa.me/9234954935" target="_blank" rel="noopener noreferrer" 
                 className="text-gray-300 hover:text-[#23D366] transition-colors">
                 <FaWhatsapp className="text-xl" />
               </a>
