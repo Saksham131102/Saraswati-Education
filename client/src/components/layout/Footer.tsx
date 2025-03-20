@@ -27,10 +27,7 @@ const Footer = () => {
                 className="text-gray-300 hover:text-[#23D366] transition-colors">
                 <FaWhatsapp className="text-xl" />
               </a>
-              <a href="https://www.youtube.com/@SarswatiEducation-v2x" target="_blank" rel="noopener noreferrer" 
-                className="text-gray-300 hover:text-[#FF0000] transition-colors">
-                <FaYoutube className="text-xl" />
-              </a>
+             
               <a href="https://www.facebook.com/profile.php?id=100006934716893" target="_blank" rel="noopener noreferrer" 
                 className="text-gray-300 hover:text-[#0860F2] transition-colors">
                 <FaFacebook className="text-xl" />
