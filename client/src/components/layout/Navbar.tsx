@@ -20,7 +20,7 @@ const Navbar = () => {
           <div className="flex items-center gap-2">
             <img src={'/logo.png'} alt="logo" width={35} height={35} />
             <Link to="/" className="flex-shrink-0 flex items-center">
-              <h1 className="text-2xl font-bold text-white hover:text-blue-100 transition-colors">Saraswati Edu</h1>
+              <h1 className="text-2xl font-bold text-white hover:text-blue-100 transition-colors">Sarswati Education</h1>
             </Link>
           </div>
 

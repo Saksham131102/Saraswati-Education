@@ -245,7 +245,7 @@ const Home = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {teamMembers.map((member: TeamMember) => (
                 <div key={member._id} className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
-                  <div className="relative h-64">
+                  <div className="relative h-96">
                     <img
                       src={member.image}
                       alt={member.name}

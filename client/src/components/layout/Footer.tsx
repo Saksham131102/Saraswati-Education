@@ -23,10 +23,11 @@ const Footer = () => {
                 className="text-gray-300 hover:text-[#FD1B81] transition-colors">
                 <FaInstagram className="text-xl" />
               </a> */}
-              <a href="https://wa.me/6202723157" target="_blank" rel="noopener noreferrer" 
+              <a href="https://wa.me/9234954935" target="_blank" rel="noopener noreferrer" 
                 className="text-gray-300 hover:text-[#23D366] transition-colors">
                 <FaWhatsapp className="text-xl" />
               </a>
+             
               <a href="https://www.facebook.com/profile.php?id=100006934716893" target="_blank" rel="noopener noreferrer" 
                 className="text-gray-300 hover:text-[#0860F2] transition-colors">
                 <FaFacebook className="text-xl" />
@@ -80,7 +81,7 @@ const Footer = () => {
               </li>
               <li className="flex items-start">
                 <FaEnvelope className="h-5 w-5 mr-2 mt-0.5 text-gray-400" />
-                <span>saurabhkumardona11@gmail.com</span>
+                <span>Sarswatieducation3@gmail.com</span>
               </li>
               <li className="flex items-start">
                 <FaMapMarkerAlt className="h-5 w-5 mr-2 mt-0.5 text-gray-400" />
